@@ -1,0 +1,64 @@
+
+CREATE TABLE Karyawan (
+    NIP int primary key,
+    Nama varchar(255),
+    Umur int,
+    Gaji varchar(255),
+    Valuta varchar(5)
+);
+
+CREATE TABLE Kurs (
+    Valuta varchar(5),
+	Kurs varchar(255)
+);
+
+INSERT INTO Karyawan (NIP, Nama, Umur, Gaji, Valuta)
+VALUES (001, 'Anton', 25, '650', 'USD'),
+(002, 'Budi', 35, '545', 'EUR'),
+(003, 'Charles', 30, '7.000.000', 'IDR'),
+(004, 'Dodi', 27, '900', 'USD'),
+(005, 'Edwin', 41, '10.000.000', 'IDR'),
+(006, 'Fajar', 20, '750', 'EUR');
+
+INSERT INTO Kurs (Valuta, Kurs)
+VALUES ('IDR', '1'),
+('USD', '10.000'),
+('EUR', '9.000'),
+('CNY', '150'),
+('JPY', '200');
+
+SELECT
+  CASE
+    WHEN Umur BETWEEN 21 AND 30 THEN '21-30 tahun'
+    WHEN Umur BETWEEN 31 AND 40 THEN '31-40 tahun'
+    ELSE 'Lain-Lain'
+  END AS Range_Umur,
+  COUNT(*) AS Total_Karyawan
+FROM 
+Karyawan
+GROUP BY
+  Range_Umur
+ORDER BY
+  Range_Umur;
+  
+SELECT SUM(CAST Gaji AS DOUBLE * CAST Kurs AS DOUBLE)AS Total_Gaji_Rupiah
+FROM Karyawan
+JOIN Kurs ON Karyawan.Valuta = Kurs.Valuta;
+
+
+SELECT Karyawan.umur, Karyawan.Gaji, Karyawan.Valuta, Kurs
+CASE 
+WHEN Umur BETWEEN 21 AND 30 THEN '21-30 tahun'
+WHEN Umur BETWEEN 31 AND 40 THEN '31-40 tahun'
+ELSE 'Lain-Lain' END AS Range_Umur,
+COUNT(*) AS Total_Karyawan,
+SUM(CAST(Gaji AS INT) * CAST(Kurs AS INT)) AS Total_Gaji_Rupiah
+FROM 
+Karyawan JOIN Kurs ON Karyawan.Valuta = Kurs.Valuta
+GROUP BY
+Range_Umur
+ORDER BY
+Range_Umur;
+
+SELECT valuta, COUNT(*) AS "Total Karyawan", SUM(gaji) AS "Total Gaji" FROM karyawan
+GROUP BY valuta, gaji HAVING "Total Gaji" > 1500000;
